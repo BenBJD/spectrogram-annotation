@@ -1,6 +1,3 @@
-from pathlib import Path
-
-import librosa
 from PySide6.QtCore import Qt, QObject, Signal, Slot, QThread, QSettings, QByteArray, QBuffer, QSize, QTimer
 from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import (
@@ -25,13 +22,16 @@ from PySide6.QtMultimedia import (
     QMediaDevices,
 )
 from PySide6.QtCore import QUrl
-import numpy as np
 
-from .spectrogram_widget import SpectrogramWidget
-from .synth import SynthEngine
-from .cqt_settings_dialog import CQTSettingsDialog
-from utils.cqt import generate_spectrogram
-from utils import midi as midi_utils
+from pathlib import Path
+import numpy as np
+import librosa
+
+from spec_annotate.spectrogram_widget import SpectrogramWidget
+from spec_annotate.synth import SynthEngine
+from spec_annotate.cqt_settings_dialog import CQTSettingsDialog
+from spec_annotate.utils.cqt import generate_spectrogram
+from spec_annotate.utils import midi as midi_utils
 
 
 class MainWindow(QMainWindow):
@@ -52,12 +52,12 @@ class MainWindow(QMainWindow):
         self._sample_rate: int | None = None
         # CQT parameters (editable)
         self._hop_length: int = 128
-        self._n_bins: int = 128
-        self._bins_per_octave: int = 12
+        self._n_bins: int = 240
+        self._bins_per_octave: int = 36
         # Use a musical note for f_min, derive MIDI for labeling
-        self._f_min_note: str = "C0"
+        self._f_min_note: str = "C2"
         self._f_min_midi: int = int(librosa.note_to_midi(self._f_min_note))
-        self._power_scaling: float | None = 0.8
+        self._power_scaling: float | None = 2
 
         # Build UI actions and menus/toolbar
         self._build_toolbar()
@@ -1285,7 +1285,6 @@ class MidiLoadWorker(QObject):
     def process(self):
         try:
             self.stage_changed.emit("Parsing MIDI…")
-            from utils import midi as midi_utils
             notes = midi_utils.import_notes_from_midi(self._path, target_duration_sec=self._target_duration_sec)
             if self._cancel:
                 self.done.emit()

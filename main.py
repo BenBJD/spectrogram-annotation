@@ -1,20 +1,53 @@
+import sys
+import os
 from PySide6.QtWidgets import QApplication
 from PySide6.QtGui import QIcon
-import sys
-from pathlib import Path
 
-from app.main_window import MainWindow
+# Absolute import from your package
+from spec_annotate.main_window import MainWindow
 
 
-def main():
+def resource_path(relative_path: str) -> str:
+    """
+    Ensures assets (like icons) are located correctly in both development
+    (relative path) and PyInstaller-bundled environments (using sys._MEIPASS).
+    """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        # Fallback for development environment
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+def run_app() -> int:
+    """
+    Initialises and runs the PySide6 application.
+    """
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("assets/spectrogram.svg"))
+
+    # --- ICON SETUP ---
+    icon_file = resource_path("assets/spectrogram.svg")
+
+    app_icon = QIcon(icon_file)
+    if not app_icon.isNull():
+        app.setWindowIcon(app_icon)
+    else:
+        # Prints a warning if the icon is not found, but allows the app to proceed
+        print(
+            f"Warning: Icon file not found or failed to load: {icon_file}. Using default.")
 
     win = MainWindow()
+
+    # Ensure the main window uses the application icon
     win.setWindowIcon(app.windowIcon())
     win.show()
-    sys.exit(app.exec())
+
+    # Execute the application loop
+    return app.exec()
 
 
 if __name__ == "__main__":
-    main()
+    # The entry point should only call the main execution function
+    sys.exit(run_app())

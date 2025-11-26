@@ -5,9 +5,9 @@ def generate_spectrogram(
     waveform,
     hop_length: int = 128,
     sample_rate: int = 22050,
-    n_bins: int = 128-librosa.note_to_midi("C0"),
-    bins_per_octave: int = 12,
-    f_min: float = librosa.note_to_hz("C0"),
+    n_bins: int = 240,
+    bins_per_octave: int = 36,
+    f_min: float = librosa.note_to_hz("C2"),
     power_scaling: float | None = None,
 ):
     """

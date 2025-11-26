@@ -2,10 +2,7 @@ from __future__ import annotations
 
 from typing import Dict, Optional
 import numpy as np
-# Import sounddevice instead of PySide6 audio components
 import sounddevice as sd
-
-# Keep QObject and other core PySide6 imports for GUI integration
 from PySide6.QtCore import QObject
 
 

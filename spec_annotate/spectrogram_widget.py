@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import numpy as np
 from PySide6.QtCore import Qt, QRectF, QPointF, Signal
-from PySide6.QtGui import QImage, QPixmap, QColor, QMouseEvent, QPainter, QPen, QFont, QWheelEvent
+from PySide6.QtGui import QImage, QPixmap, QColor, QMouseEvent, QPainter, QPen, QWheelEvent
 from PySide6.QtWidgets import (
     QGraphicsView,
     QGraphicsScene,
